@@ -79,5 +79,38 @@ input.addEventListener("keydown",e=>{
   if(e.key==="Enter")sendMessage();
 });
 </script>
+  <button onclick="makeImage()">🎨 Create Image</button>
+
+<div id="imageResult"></div>
+
+<script>
+async function makeImage() {
+  const prompt = window.prompt("Kaisi image banani hai?");
+  if (!prompt) return;
+
+  const result = document.getElementById("imageResult");
+  result.innerText = "SHANA image bana rahi hai...";
+
+  try {
+    const res = await fetch("https://my-ai-backend.shashikantguptastp38.workers.dev/", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({imagePrompt: prompt})
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Image failed");
+
+    result.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = data.image;
+    img.style.maxWidth = "100%";
+    result.appendChild(img);
+  } catch (e) {
+    result.innerText = "Error: " + e.message;
+  }
+}
+</script>
 </body>
 </html>
